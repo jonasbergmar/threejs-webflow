@@ -61,9 +61,9 @@ const initSuburbScene = () => {
         const particleMaterial = new THREE.PointsMaterial({ color: 0x7747D0, size: 0.05 });
 
         // Base (Box)
-        const width = 0.5 + Math.random() * 0.5;
+        const width = 0.5 + Math.random() * 1;
         const height = 1 + Math.random() * 1;
-        const depth = 0.5 + Math.random() * 0.5;
+        const depth = 0.5 + Math.random() * 1;
         
         const boxGeometry = new THREE.BoxGeometry(width, height, depth);
         
