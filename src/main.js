@@ -141,7 +141,7 @@ const initSuburbScene = () => {
     ScrollTrigger.create({
         trigger: container,
         start: "top top",
-        end: "+=2000", // Scroll distance to complete the animation
+        end: "bottom top", // Scroll distance to complete the animation
         pin: true,
         scrub: 1,
         onUpdate: (self) => {
@@ -161,7 +161,7 @@ const initSuburbScene = () => {
         scrollTrigger: {
             trigger: container,
             start: "top top",
-            end: "+=2000",
+            end: "bottom top",
             scrub: 1,
         }
     });
