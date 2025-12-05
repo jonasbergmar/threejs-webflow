@@ -62,7 +62,7 @@ const initSuburbScene = () => {
 
         // Base (Box)
         const width = 0.5 + Math.random() * 1;
-        const height = 1 + Math.random() * 1;
+        const height = 0.75 + Math.random() * 1;
         const depth = 0.5 + Math.random() * 1;
         
         const boxGeometry = new THREE.BoxGeometry(width, height, depth);
