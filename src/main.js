@@ -30,10 +30,10 @@ const initSuburbScene = () => {
     container.appendChild(renderer.domElement);
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x7747D0, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+    const directionalLight = new THREE.DirectionalLight(0x7747D0, 1);
     directionalLight.position.set(10, 20, 10);
     scene.add(directionalLight);
 
@@ -50,8 +50,8 @@ const initSuburbScene = () => {
         const house = new THREE.Group();
 
         // Materials
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.8 });
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x00ff88, size: 0.05 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x7747D0, transparent: true, opacity: 0.8 });
+        const particleMaterial = new THREE.PointsMaterial({ color: 0x7747D0, size: 0.05 });
 
         // Base (Box)
         const width = 1 + Math.random() * 0.5;
@@ -142,7 +142,6 @@ const initSuburbScene = () => {
         trigger: container,
         start: "top top",
         end: "bottom top", // Scroll distance to complete the animation
-        pin: true,
         scrub: 1,
         onUpdate: (self) => {
             // Optional: Rotate camera or group based on scroll progress
