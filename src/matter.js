@@ -50,6 +50,9 @@ export const initMatter = () => {
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         el.style.backgroundColor = randomColor;
         el.style.zIndex = '10'; // Ensure visibility
+        el.style.display = 'block'; // Force display
+        el.style.opacity = '1'; // Force opacity
+        el.style.visibility = 'visible'; // Force visibility
 
         // Randomize position
         // Start above the container top
@@ -103,6 +106,12 @@ export const initMatter = () => {
             
             element.style.transform = `translate(${x - elWidth / 2}px, ${y - elHeight / 2}px) rotate(${angle}rad)`;
         });
+        
+        // Debug: Log first body position every 60 frames (approx 1 sec)
+        if (engine.timing.timestamp % 1000 < 20 && bodies.length > 0) {
+             const b = bodies[0].body;
+             console.log(`Matter.js: Body 0 pos: x=${b.position.x.toFixed(0)}, y=${b.position.y.toFixed(0)}`);
+        }
     });
 
     // Scroll Trigger
