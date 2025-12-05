@@ -150,20 +150,6 @@ const initSuburbScene = () => {
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-
-    // Shuffle houses array for random build order if desired, or keep linear
-    // houses.sort(() => Math.random() - 0.5);
-
-    houses.forEach((house, index) => {
-        tl.to(house.scale, {
-            x: 1,
-            y: 1,
-            z: 1,
-            duration: 1,
-            ease: "back.out(1.7)",
-            onStart: () => { house.visible = true; }
-        }, index * 0.1); // Stagger start times
-    });
 };
 
 // Initialize when DOM is ready
