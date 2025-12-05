@@ -14,6 +14,7 @@ export const initMatter = () => {
 
     // Select elements
     const boxElements = document.querySelectorAll('.matter-box');
+    console.log(`Matter.js: Found ${boxElements.length} .matter-box elements`);
     const bodies = [];
     
     // Pastel colors
@@ -90,7 +91,7 @@ export const initMatter = () => {
         observer.observe(trigger);
     } else {
         // Fallback: if no trigger, just start immediately (or maybe wait for body?)
-        console.warn('No #matter-trigger found, starting physics immediately');
+        console.warn('Matter.js: No #matter-trigger found, starting physics immediately');
         bodies.forEach(({ body }) => {
              Matter.Body.setStatic(body, false);
         });
