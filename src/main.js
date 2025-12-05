@@ -3,9 +3,7 @@ import './styles/style.css'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { gsap } from 'gsap';
-import { initMatter } from './matter.js';
 
-// initMatter(); // Removed immediate call
     
 
 const initSuburbScene = () => {
@@ -173,8 +171,6 @@ const initSuburbScene = () => {
 };
 
 // Initialize when DOM is ready
-// Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
     initSuburbScene();
-    initMatter();
 });
