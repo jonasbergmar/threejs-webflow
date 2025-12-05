@@ -3,6 +3,9 @@ import './styles/style.css'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { gsap } from 'gsap';
+import { initMatter } from './matter.js';
+
+initMatter();
     
 
 const initSuburbScene = () => {
