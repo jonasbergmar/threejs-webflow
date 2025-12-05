@@ -83,9 +83,7 @@ export const initMatter = () => {
     const rightWall = Bodies.rectangle(width + 50, height / 2, 100, height * 2, { isStatic: true });
     Composite.add(world, [leftWall, rightWall]);
 
-    // Create runner
-    const runner = Runner.create();
-    Runner.run(runner, engine);
+    // Runner creation moved to scroll trigger
 
     // Update loop
     Events.on(engine, 'afterUpdate', () => {
@@ -119,9 +117,17 @@ export const initMatter = () => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 console.log('Matter.js: Container in view, starting physics');
+                
+                // Create and start the runner now to ensure fresh timing
+                const runner = Runner.create();
+                Runner.run(runner, engine);
+
                 // Wake up bodies
                 bodies.forEach(({ body }) => {
                     Matter.Body.setStatic(body, false);
+                    // Explicitly set velocity to 0 to avoid any accumulated NaN
+                    Matter.Body.setVelocity(body, { x: 0, y: 0 });
+                    Matter.Body.setAngularVelocity(body, 0);
                 });
                 // Disconnect observer after triggering
                 observer.disconnect();
