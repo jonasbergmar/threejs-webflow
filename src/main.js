@@ -1,9 +1,10 @@
 import './styles/style.css'
 
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
+    
 gsap.registerPlugin(ScrollTrigger);
 
 const initSuburbScene = () => {
@@ -29,6 +30,12 @@ const initSuburbScene = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
+    // Orbit Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enableDamping = true; // Optional, but nice for smooth rotation
+
+
     // Lights
     const ambientLight = new THREE.AmbientLight(0x7747D0, 0.5);
     scene.add(ambientLight);
@@ -38,7 +45,7 @@ const initSuburbScene = () => {
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0x444444, 0x222222);
+    const gridHelper = new THREE.GridHelper(50, 50, 0xC3AEEA, 0xE1D6F5);
     scene.add(gridHelper);
 
     // House Generation Logic
@@ -119,6 +126,8 @@ const initSuburbScene = () => {
         
         // Subtle rotation of the entire group
         houseGroup.rotation.y += 0.001;
+        
+        controls.update();
 
         renderer.render(scene, camera);
     };
