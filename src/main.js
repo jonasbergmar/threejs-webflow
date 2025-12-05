@@ -2,10 +2,7 @@ import './styles/style.css'
 
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
     
-gsap.registerPlugin(ScrollTrigger);
 
 const initSuburbScene = () => {
     const container = document.getElementById('village-3d');
@@ -153,39 +150,6 @@ const initSuburbScene = () => {
         renderer.setSize(container.clientWidth, container.clientHeight);
     });
 
-    // ScrollTrigger Animation
-    // Sort houses by distance from center or just random/linear for the "building after each other" effect
-    // Let's do a simple stagger based on their index
-    
-    // We want the animation to happen while scrolling through the container
-    // But usually, for a "scene" like this, we might want to pin the container
-    
-    ScrollTrigger.create({
-        trigger: container,
-        start: "top top",
-        end: "bottom top", // Scroll distance to complete the animation
-        scrub: 1,
-        onUpdate: (self) => {
-            // Optional: Rotate camera or group based on scroll progress
-            // houseGroup.rotation.y = self.progress * Math.PI * 0.5; // Removed for cursor interaction
-        }
-    });
-
-    // Animate houses in
-    // We can't use a simple stagger with scrub directly on the timeline easily if we want complex "building" effect
-    // But we can map the progress to the houses array
-    
-    const totalHouses = houses.length;
-    
-    // Create a timeline linked to the same ScrollTrigger
-    const tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: container,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1,
-        }
-    });
 
     // Shuffle houses array for random build order if desired, or keep linear
     // houses.sort(() => Math.random() - 0.5);
