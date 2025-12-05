@@ -15,8 +15,8 @@ const initSuburbScene = () => {
 
     // Scene Setup
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x050505); // Dark background
-    scene.fog = new THREE.Fog(0x050505, 10, 50);
+    // scene.background = new THREE.Color(0x050505); // Removed for transparency
+    // scene.fog = new THREE.Fog(0x050505, 10, 50); // Removed for transparency
 
     // Camera
     const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
