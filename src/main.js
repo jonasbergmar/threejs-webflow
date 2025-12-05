@@ -45,7 +45,7 @@ const initSuburbScene = () => {
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0xC3AEEA, 0xE1D6F5);
+    const gridHelper = new THREE.GridHelper(50, 50, 0xE1D6F5, 0xE1D6F5);
     scene.add(gridHelper);
 
     // House Generation Logic
@@ -63,7 +63,7 @@ const initSuburbScene = () => {
         // Base (Box)
         const width = 0.5 + Math.random() * 0.5;
         const height = 1 + Math.random() * 1;
-        const depth = 1 + Math.random() * 0.5;
+        const depth = 0.5 + Math.random() * 0.5;
         
         const boxGeometry = new THREE.BoxGeometry(width, height, depth);
         
