@@ -62,7 +62,7 @@ const initSuburbScene = () => {
 
         // Base (Box)
         const width = 0.5 + Math.random() * 1;
-        const height = 0.75 + Math.random() * 1;
+        const height = 0.5 + Math.random() * 1;
         const depth = 0.5 + Math.random() * 1;
         
         const boxGeometry = new THREE.BoxGeometry(width, height, depth);
@@ -120,12 +120,25 @@ const initSuburbScene = () => {
         }
     }
 
+    // Cursor Interaction
+    const cursor = { x: 0, y: 0 };
+    window.addEventListener('mousemove', (event) => {
+        cursor.x = (event.clientX / window.innerWidth) - 0.5;
+        cursor.y = (event.clientY / window.innerHeight) - 0.5;
+    });
+
     // Animation Loop
     const animate = () => {
         requestAnimationFrame(animate);
         
-        // Subtle rotation of the entire group
-        houseGroup.rotation.y += 0.001;
+        // Rotate group based on cursor
+        // Target rotation
+        const targetRotationY = cursor.x * Math.PI * 0.5; // +/- 45 degrees
+        const targetRotationX = cursor.y * Math.PI * 0.2; // +/- 18 degrees
+
+        // Smoothly interpolate
+        houseGroup.rotation.y += (targetRotationY - houseGroup.rotation.y) * 0.05;
+        houseGroup.rotation.x += (targetRotationX - houseGroup.rotation.x) * 0.05;
         
         controls.update();
 
@@ -154,7 +167,7 @@ const initSuburbScene = () => {
         scrub: 1,
         onUpdate: (self) => {
             // Optional: Rotate camera or group based on scroll progress
-            houseGroup.rotation.y = self.progress * Math.PI * 0.5;
+            // houseGroup.rotation.y = self.progress * Math.PI * 0.5; // Removed for cursor interaction
         }
     });
 
