@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js Suburb Test</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #111;
+            color: white;
+            font-family: sans-serif;
+        }
+        .spacer {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #333;
+        }
+        .village-3d-wrapper {
+            width: 100%;
+            height: 100vh;
+            position: relative; /* Or fixed/sticky depending on desired effect, but relative for now to flow */
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="spacer">
+        <h1>Scroll Down</h1>
+    </div>
+
+    <div id="village-3d" class="village-3d-wrapper"></div>
+
+    <div class="spacer">
+        <h1>End of Scene</h1>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
