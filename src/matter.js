@@ -15,18 +15,29 @@ export const initMatter = () => {
     // Select elements
     const boxElements = document.querySelectorAll('.matter-box');
     const bodies = [];
+    
+    // Pastel colors
+    const colors = ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9'];
 
     // Create bodies for each element
     boxElements.forEach(el => {
-        const rect = el.getBoundingClientRect();
-        // Matter.js bodies are positioned at their center
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
+        // Randomize color
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        el.style.backgroundColor = randomColor;
+
+        // Randomize position
+        // Start above the viewport
+        const startX = Math.random() * window.innerWidth;
+        const startY = -Math.random() * 500 - 100; // Random height above viewport
         
-        const body = Bodies.rectangle(x, y, rect.width, rect.height, {
+        const width = 50; // Fixed size for now as per CSS, or get from rect if we want variable
+        const height = 50;
+
+        const body = Bodies.rectangle(startX, startY, width, height, {
             restitution: 0.8,
             friction: 0.5,
-            density: 0.04
+            density: 0.04,
+            isStatic: true // Start static until triggered
         });
         
         bodies.push({ body, element: el });
@@ -52,40 +63,42 @@ export const initMatter = () => {
             const { x, y } = body.position;
             const angle = body.angle;
             
-            // Update DOM element
-            // We need to offset by width/height/2 because DOM elements are usually positioned top-left (unless transformed),
-            // but here we are likely just applying transform to their initial static position?
-            // Actually, if we set position: absolute on them, we can just move them.
-            // Or we can use translate.
-            // Let's assume they are in the flow initially, so we need to calculate delta or set them to absolute.
-            // A common approach is to set them to absolute position initially or just use transform from 0,0.
-            // However, getBoundingClientRect gives viewport coordinates.
-            // So if we set `position: fixed` or `absolute` relative to body, we can just use x/y.
-            
-            // Let's try setting transform. 
-            // Since the body x/y is the center, and we want to place the element center there.
-            // But CSS transform origin is usually center.
-            // If the element is statically positioned in the DOM, applying transform(x, y) adds to that.
-            // That's messy.
-            // Better strategy:
-            // 1. Get initial rect.
-            // 2. Set element to position: fixed (or absolute to body) at top:0, left:0.
-            // 3. Apply transform translate(x - width/2, y - height/2) rotate(angle).
-            
             element.style.position = 'fixed';
             element.style.top = '0';
             element.style.left = '0';
-            element.style.transform = `translate(${x - element.offsetWidth / 2}px, ${y - element.offsetHeight / 2}px) rotate(${angle}rad)`;
+            element.style.transform = `translate(${x - 50 / 2}px, ${y - 50 / 2}px) rotate(${angle}rad)`;
         });
     });
 
+    // Scroll Trigger
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Wake up bodies
+                bodies.forEach(({ body }) => {
+                    Matter.Body.setStatic(body, false);
+                });
+                // Disconnect observer after triggering
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.1 });
+
+    // Observe a trigger element. We'll look for #matter-trigger
+    const trigger = document.getElementById('matter-trigger');
+    if (trigger) {
+        observer.observe(trigger);
+    } else {
+        // Fallback: if no trigger, just start immediately (or maybe wait for body?)
+        console.warn('No #matter-trigger found, starting physics immediately');
+        bodies.forEach(({ body }) => {
+             Matter.Body.setStatic(body, false);
+        });
+    }
+
     // Handle resize
     window.addEventListener('resize', () => {
-        // Update ground and walls
         Matter.Body.setPosition(ground, { x: window.innerWidth / 2, y: window.innerHeight + 50 });
-        // We might need to resize ground width too, but Body.setVertices is complex. 
-        // For now, let's just make ground very wide initially or recreate it.
-        // Recreating is easier but might glitch.
-        // Let's just make it huge initially.
+        Matter.Body.setPosition(rightWall, { x: window.innerWidth + 50, y: window.innerHeight / 2 });
     });
 };
