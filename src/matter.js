@@ -8,13 +8,37 @@ export const initMatter = () => {
           Composite = Matter.Composite,
           Events = Matter.Events;
 
+    // Find trigger/container element
+    const container = document.getElementById('matter-trigger');
+    
+    if (!container) {
+        console.warn('Matter.js: #matter-trigger element not found. Animation will not run.');
+        return;
+    }
+
+    // Ensure container has relative positioning for absolute children
+    container.style.position = 'relative';
+    // Optional: hide overflow if you don't want them visible outside
+    // container.style.overflow = 'hidden'; 
+
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+
+    console.log(`Matter.js: Container dimensions ${width}x${height}`);
+
     // Create engine
     const engine = Engine.create();
     const world = engine.world;
 
-    // Select elements
-    const boxElements = document.querySelectorAll('.matter-box');
-    console.log(`Matter.js: Found ${boxElements.length} .matter-box elements`);
+    // Select elements INSIDE the container
+    const boxElements = container.querySelectorAll('.matter-box');
+    console.log(`Matter.js: Found ${boxElements.length} .matter-box elements inside container`);
+    
+    if (boxElements.length === 0) {
+        console.warn('Matter.js: No .matter-box elements found inside #matter-trigger');
+        return;
+    }
+
     const bodies = [];
     
     // Pastel colors
@@ -25,16 +49,18 @@ export const initMatter = () => {
         // Randomize color
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         el.style.backgroundColor = randomColor;
+        el.style.zIndex = '10'; // Ensure visibility
 
         // Randomize position
-        // Start above the viewport
-        const startX = Math.random() * window.innerWidth;
-        const startY = -Math.random() * 500 - 100; // Random height above viewport
+        // Start above the container top
+        const startX = Math.random() * width;
+        const startY = -Math.random() * 500 - 100; 
         
-        const width = 50; // Fixed size for now as per CSS, or get from rect if we want variable
-        const height = 50;
+        // Use element dimensions if available, else default
+        const elWidth = el.offsetWidth || 50;
+        const elHeight = el.offsetHeight || 50;
 
-        const body = Bodies.rectangle(startX, startY, width, height, {
+        const body = Bodies.rectangle(startX, startY, elWidth, elHeight, {
             restitution: 0.8,
             friction: 0.5,
             density: 0.04,
@@ -45,13 +71,13 @@ export const initMatter = () => {
         Composite.add(world, body);
     });
 
-    // Add ground
-    const ground = Bodies.rectangle(window.innerWidth / 2, window.innerHeight + 50, window.innerWidth, 100, { isStatic: true });
+    // Add ground at the bottom of the container
+    const ground = Bodies.rectangle(width / 2, height + 50, width, 100, { isStatic: true });
     Composite.add(world, ground);
     
     // Add walls
-    const leftWall = Bodies.rectangle(-50, window.innerHeight / 2, 100, window.innerHeight, { isStatic: true });
-    const rightWall = Bodies.rectangle(window.innerWidth + 50, window.innerHeight / 2, 100, window.innerHeight, { isStatic: true });
+    const leftWall = Bodies.rectangle(-50, height / 2, 100, height * 2, { isStatic: true });
+    const rightWall = Bodies.rectangle(width + 50, height / 2, 100, height * 2, { isStatic: true });
     Composite.add(world, [leftWall, rightWall]);
 
     // Create runner
@@ -64,10 +90,18 @@ export const initMatter = () => {
             const { x, y } = body.position;
             const angle = body.angle;
             
-            element.style.position = 'fixed';
+            // Use absolute positioning relative to the container
+            element.style.position = 'absolute';
+            // Reset top/left to 0 so transform works from top-left origin
             element.style.top = '0';
             element.style.left = '0';
-            element.style.transform = `translate(${x - 50 / 2}px, ${y - 50 / 2}px) rotate(${angle}rad)`;
+            
+            // Translate to physics position
+            // Matter.js bodies are centered, so offset by half width/height
+            const elWidth = element.offsetWidth || 50;
+            const elHeight = element.offsetHeight || 50;
+            
+            element.style.transform = `translate(${x - elWidth / 2}px, ${y - elHeight / 2}px) rotate(${angle}rad)`;
         });
     });
 
@@ -75,6 +109,7 @@ export const initMatter = () => {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                console.log('Matter.js: Container in view, starting physics');
                 // Wake up bodies
                 bodies.forEach(({ body }) => {
                     Matter.Body.setStatic(body, false);
@@ -85,21 +120,16 @@ export const initMatter = () => {
         });
     }, { threshold: 0.1 });
 
-    // Observe a trigger element. We'll look for #matter-trigger
-    const trigger = document.getElementById('matter-trigger');
-    if (trigger) {
-        observer.observe(trigger);
-    } else {
-        // Fallback: if no trigger, just start immediately (or maybe wait for body?)
-        console.warn('Matter.js: No #matter-trigger found, starting physics immediately');
-        bodies.forEach(({ body }) => {
-             Matter.Body.setStatic(body, false);
-        });
-    }
+    observer.observe(container);
 
     // Handle resize
     window.addEventListener('resize', () => {
-        Matter.Body.setPosition(ground, { x: window.innerWidth / 2, y: window.innerHeight + 50 });
-        Matter.Body.setPosition(rightWall, { x: window.innerWidth + 50, y: window.innerHeight / 2 });
+        const newWidth = container.clientWidth;
+        const newHeight = container.clientHeight;
+        
+        Matter.Body.setPosition(ground, { x: newWidth / 2, y: newHeight + 50 });
+        // Update ground width if needed (requires recreating or scaling, but position update helps)
+        // For walls:
+        Matter.Body.setPosition(rightWall, { x: newWidth + 50, y: newHeight / 2 });
     });
 };
