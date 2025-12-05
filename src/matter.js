@@ -26,6 +26,10 @@ export const initMatter = () => {
 
     console.log(`Matter.js: Container dimensions ${width}x${height}`);
 
+    if (container.tagName === 'CANVAS') {
+        console.warn('Matter.js: #matter-trigger is a <canvas> element. Child elements (boxes) will NOT be visible. Please use a <div> instead.');
+    }
+
     // Create engine
     const engine = Engine.create();
     const world = engine.world;
