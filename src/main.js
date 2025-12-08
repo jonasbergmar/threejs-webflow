@@ -44,7 +44,7 @@ const initSuburbScene = () => {
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0xF25119, 0xF25119, 0.5);
+    const gridHelper = new THREE.GridHelper(50, 50, 0xF7926E, 0xF7926E, 0.5);
     scene.add(gridHelper);
 
     // House Generation Logic
