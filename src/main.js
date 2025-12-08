@@ -59,40 +59,88 @@ const initSuburbScene = () => {
         const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x7747D0, transparent: true, opacity: 0.8 });
         const particleMaterial = new THREE.PointsMaterial({ color: 0x7747D0, size: 0.05 });
 
-        // Base (Box)
-        const width = 0.5 + Math.random() * 1;
-        const height = 0.5 + Math.random() * 1;
-        const depth = 0.5 + Math.random() * 1;
-        
-        const boxGeometry = new THREE.BoxGeometry(width, height, depth);
-        
-        // Wireframe for Box
-        const boxEdges = new THREE.EdgesGeometry(boxGeometry);
-        const boxLines = new THREE.LineSegments(boxEdges, wireframeMaterial);
-        boxLines.position.y = height / 2;
-        house.add(boxLines);
+        // Helper to add a building block
+        const addBlock = (w, h, d, px, py, pz) => {
+            const geometry = new THREE.BoxGeometry(w, h, d);
+            
+            const edges = new THREE.EdgesGeometry(geometry);
+            const lines = new THREE.LineSegments(edges, wireframeMaterial);
+            lines.position.set(px, py + h / 2, pz);
+            house.add(lines);
 
-        // Particles for Box vertices
-        const boxPoints = new THREE.Points(boxGeometry, particleMaterial);
-        boxPoints.position.y = height / 2;
-        house.add(boxPoints);
+            const points = new THREE.Points(geometry, particleMaterial);
+            points.position.set(px, py + h / 2, pz);
+            house.add(points);
+            
+            return { w, h, d, px, py, pz };
+        };
 
-        // Roof (Cone)
-        const roofHeight = 0.5 + Math.random() * 0.5;
-        const coneGeometry = new THREE.ConeGeometry(Math.max(width, depth) * 0.8, roofHeight, 4);
+        // Helper to add a roof
+        const addRoof = (w, d, py, pz, type = 'pyramid') => {
+            let geometry;
+            let roofHeight = 0.5 + Math.random() * 0.5;
+            
+            if (type === 'gable') {
+                // Gable roof using Cylinder (prism)
+                // Radius should be enough to cover width/depth
+                // We'll use a 3-sided cylinder
+                // This is a bit tricky to align perfectly with a box without custom geometry,
+                // but let's try a simple Cone (pyramid) or a rotated Box for flat.
+                // Actually, let's stick to Cone for now but vary parameters, 
+                // or use a helper for Gable if we can make a prism.
+                // Let's try a simple approach: 
+                // 50% chance of Pyramid, 50% chance of "Flat" (just a top border) or taller pyramid.
+                
+                // Let's implement a simple Gable using a Cone with 4 radial segments but rotated 45 deg? 
+                // No, Cone with 4 segments is a pyramid.
+                // A prism is Cylinder with 3 segments.
+                geometry = new THREE.CylinderGeometry(0, Math.max(w, d) * 0.6, roofHeight, 4, 1);
+                // Rotate to align?
+            } else {
+                // Pyramid
+                geometry = new THREE.ConeGeometry(Math.max(w, d) * 0.7, roofHeight, 4);
+            }
+
+            const edges = new THREE.EdgesGeometry(geometry);
+            const lines = new THREE.LineSegments(edges, wireframeMaterial);
+            lines.position.set(0, py + roofHeight / 2, pz);
+            lines.rotation.y = Math.PI / 4;
+            house.add(lines);
+
+            const points = new THREE.Points(geometry, particleMaterial);
+            points.position.set(0, py + roofHeight / 2, pz);
+            points.rotation.y = Math.PI / 4;
+            house.add(points);
+        };
+
+        // Main Block
+        const mainWidth = 1 + Math.random() * 1.5;
+        const mainHeight = 1 + Math.random() * 1.5;
+        const mainDepth = 1 + Math.random() * 1.5;
         
-        // Wireframe for Roof
-        const coneEdges = new THREE.EdgesGeometry(coneGeometry);
-        const coneLines = new THREE.LineSegments(coneEdges, wireframeMaterial);
-        coneLines.position.y = height + roofHeight / 2;
-        coneLines.rotation.y = Math.PI / 4; // Align with box
-        house.add(coneLines);
+        addBlock(mainWidth, mainHeight, mainDepth, 0, 0, 0);
 
-        // Particles for Roof vertices
-        const conePoints = new THREE.Points(coneGeometry, particleMaterial);
-        conePoints.position.y = height + roofHeight / 2;
-        conePoints.rotation.y = Math.PI / 4;
-        house.add(conePoints);
+        // Chance for L-Shape (add a side wing)
+        if (Math.random() > 0.5) {
+            const wingWidth = 0.8 + Math.random() * 0.5;
+            const wingHeight = mainHeight * (0.5 + Math.random() * 0.3); // Lower than main
+            const wingDepth = 0.8 + Math.random() * 0.5;
+            
+            // Position wing attached to main
+            // E.g., shift x by (mainWidth/2 + wingWidth/2)
+            const offsetX = (mainWidth / 2 + wingWidth / 2) - 0.1; // Slight overlap
+            // Randomly place left or right, or front/back
+            // Let's just do +X for simplicity
+            
+            addBlock(wingWidth, wingHeight, wingDepth, offsetX, 0, (mainDepth - wingDepth)/2);
+            
+            // Maybe add a small roof to the wing?
+            // addRoof(wingWidth, wingDepth, wingHeight, (mainDepth - wingDepth)/2, 'pyramid');
+        }
+
+        // Add Main Roof
+        // Simple variety: Pyramid vs Taller Pyramid
+        addRoof(mainWidth, mainDepth, mainHeight, 0, Math.random() > 0.5 ? 'pyramid' : 'gable');
 
         // Positioning
         house.position.set(x, 0, z);
