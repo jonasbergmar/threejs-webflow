@@ -36,15 +36,15 @@ const initSuburbScene = () => {
 
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xB6E2CB, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x1D4932, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0xB6E2CB, 1);
+    const directionalLight = new THREE.DirectionalLight(0x1D4932, 1);
     directionalLight.position.set(10, 20, 10);
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0xB6E2CB, 0xB6E2CB);
+    const gridHelper = new THREE.GridHelper(50, 50, 0x1D4932, 0x1D4932);
     gridHelper.material.transparent = true;
     gridHelper.material.opacity = 0.05; // Lowered opacity
     scene.add(gridHelper);
@@ -58,8 +58,8 @@ const initSuburbScene = () => {
         const house = new THREE.Group();
 
         // Materials
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xB6E2CB, transparent: true, opacity: 0.8 });
-        const particleMaterial = new THREE.PointsMaterial({ color: 0xB6E2CB, size: 0.05 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.8 });
+        const particleMaterial = new THREE.PointsMaterial({ color: 0x1D4932, size: 0.05 });
 
         // Base (Box)
         const width = 1 + Math.random() * 1;
