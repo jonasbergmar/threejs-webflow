@@ -36,15 +36,15 @@ const initSuburbScene = () => {
 
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0x3295D7, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x797979, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x3295D7, 1);
+    const directionalLight = new THREE.DirectionalLight(0x797979, 1);
     directionalLight.position.set(10, 20, 10);
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0x3295D7, 0x3295D7);
+    const gridHelper = new THREE.GridHelper(50, 50, 0x797979, 0x797979);
     gridHelper.material.transparent = true;
     gridHelper.material.opacity = 0.2; // Lowered opacity
     scene.add(gridHelper);
