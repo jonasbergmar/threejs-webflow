@@ -46,7 +46,7 @@ const initSuburbScene = () => {
     // Grid Helper (Ground)
     const gridHelper = new THREE.GridHelper(50, 50, 0xB6E2CB, 0xB6E2CB);
     gridHelper.material.transparent = true;
-    gridHelper.material.opacity = 0.2; // Lowered opacity
+    gridHelper.material.opacity = 0.05; // Lowered opacity
     scene.add(gridHelper);
 
     // House Generation Logic
