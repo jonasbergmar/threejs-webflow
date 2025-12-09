@@ -54,12 +54,33 @@ const initSuburbScene = () => {
     const houseGroup = new THREE.Group();
     scene.add(houseGroup);
 
+    // Helper for circle texture
+    const circleTexture = (() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.beginPath();
+        ctx.arc(16, 16, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        
+        return new THREE.CanvasTexture(canvas);
+    })();
+
     const createHouse = (x, z) => {
         const house = new THREE.Group();
 
         // Materials
         const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.8 });
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x1D4932, size: 0.05 });
+        const particleMaterial = new THREE.PointsMaterial({ 
+            color: 0x1D4932, 
+            size: 0.1, 
+            map: circleTexture, 
+            transparent: true, 
+            alphaTest: 0.5 
+        });
 
         // Base (Box)
         const width = 1 + Math.random() * 1;
