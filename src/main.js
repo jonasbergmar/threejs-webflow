@@ -54,100 +54,68 @@ const initSuburbScene = () => {
     const houseGroup = new THREE.Group();
     scene.add(houseGroup);
 
-    // Helper for circle texture removed as we use SphereGeometry now
+    // Helper for circle texture
+    const circleTexture = (() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.beginPath();
+        ctx.arc(16, 16, 16, 0, 2 * Math.PI);
+        ctx.fillStyle = '#ffffff';
+        ctx.fill();
+        
+        return new THREE.CanvasTexture(canvas);
+    })();
 
     const createHouse = (x, z) => {
         const house = new THREE.Group();
 
         // Materials
         const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.8 });
-        const sphereGeometry = new THREE.SphereGeometry(0.08, 16, 16); // Increased resolution
-        const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0x1D4932 });
-
-        // Helper to place spheres at vertices
-        const placeSpheres = (geometry, px, py, pz, rotationY = 0) => {
-            const posAttribute = geometry.attributes.position;
-            const uniquePositions = [];
-
-            for (let i = 0; i < posAttribute.count; i++) {
-                const localVertex = new THREE.Vector3().fromBufferAttribute(posAttribute, i);
-                
-                // Deduplicate vertices (BoxGeometry has multiple vertices per corner)
-                let isDuplicate = false;
-                for (const existing of uniquePositions) {
-                    if (existing.distanceTo(localVertex) < 0.001) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-                if (isDuplicate) continue;
-                uniquePositions.push(localVertex);
-
-                const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-                
-                // Apply rotation if needed
-                if (rotationY !== 0) {
-                    localVertex.applyAxisAngle(new THREE.Vector3(0, 1, 0), rotationY);
-                }
-
-                // Apply position offset
-                sphere.position.copy(localVertex);
-                sphere.position.x += px;
-                sphere.position.y += py;
-                sphere.position.z += pz;
-
-                house.add(sphere);
-            }
-        };
-
-        // Helper to add a building block
-        const addBlock = (w, h, d, px, py, pz) => {
-            const geometry = new THREE.BoxGeometry(w, h, d);
-            
-            const edges = new THREE.EdgesGeometry(geometry);
-            const lines = new THREE.LineSegments(edges, wireframeMaterial);
-            lines.position.set(px, py + h / 2, pz);
-            house.add(lines);
-
-            // Place spheres
-            placeSpheres(geometry, px, py + h / 2, pz);
-            
-            return { w, h, d, px, py, pz };
-        };
-
-        // Helper to add a roof
-        const addRoof = (w, d, py, pz, type = 'pyramid') => {
-            let geometry;
-            let roofHeight = 0.5 + Math.random() * 0.5;
-            let rotationY = 0;
-            
-            if (type === 'gable') {
-                geometry = new THREE.CylinderGeometry(0, Math.max(w, d) * 0.6, roofHeight, 4, 1);
-            } else {
-                // Pyramid
-                geometry = new THREE.ConeGeometry(Math.max(w, d) * 0.7, roofHeight, 4);
-                rotationY = Math.PI / 4;
-            }
-
-            const edges = new THREE.EdgesGeometry(geometry);
-            const lines = new THREE.LineSegments(edges, wireframeMaterial);
-            lines.position.set(0, py + roofHeight / 2, pz);
-            lines.rotation.y = rotationY;
-            house.add(lines);
-
-            // Place spheres
-            placeSpheres(geometry, 0, py + roofHeight / 2, pz, rotationY);
-        };
+        const particleMaterial = new THREE.PointsMaterial({ 
+            color: 0x1D4932, 
+            size: 0.1, 
+            map: circleTexture, 
+            transparent: true, 
+            alphaTest: 0.5 
+        });
 
         // Base (Box)
         const width = 1 + Math.random() * 1;
         const height = 1 + Math.random() * 1;
         const depth = 1 + Math.random() * 1;
         
-        addBlock(width, height, depth, 0, 0, 0);
+        const boxGeometry = new THREE.BoxGeometry(width, height, depth);
+        
+        // Wireframe for Box
+        const boxEdges = new THREE.EdgesGeometry(boxGeometry);
+        const boxLines = new THREE.LineSegments(boxEdges, wireframeMaterial);
+        boxLines.position.y = height / 2;
+        house.add(boxLines);
+
+        // Particles for Box vertices
+        const boxPoints = new THREE.Points(boxGeometry, particleMaterial);
+        boxPoints.position.y = height / 2;
+        house.add(boxPoints);
 
         // Roof (Cone)
-        addRoof(width, depth, height, 0);
+        const roofHeight = 0.5 + Math.random() * 0.5;
+        const coneGeometry = new THREE.ConeGeometry(Math.max(width, depth) * 0.8, roofHeight, 4);
+        
+        // Wireframe for Roof
+        const coneEdges = new THREE.EdgesGeometry(coneGeometry);
+        const coneLines = new THREE.LineSegments(coneEdges, wireframeMaterial);
+        coneLines.position.y = height + roofHeight / 2;
+        coneLines.rotation.y = Math.PI / 4; // Align with box
+        house.add(coneLines);
+
+        // Particles for Roof vertices
+        const conePoints = new THREE.Points(coneGeometry, particleMaterial);
+        conePoints.position.y = height + roofHeight / 2;
+        conePoints.rotation.y = Math.PI / 4;
+        house.add(conePoints);
 
         // Positioning
         house.position.set(x, 0, z);
