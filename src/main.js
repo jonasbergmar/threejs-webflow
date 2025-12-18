@@ -58,7 +58,7 @@ const initSuburbScene = () => {
         const house = new THREE.Group();
 
         // Materials
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.8 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.5 });
         const particleMaterial = new THREE.PointsMaterial({ color: 0x1D4932, size: 0.05 });
 
         // Base (Box)
@@ -94,7 +94,7 @@ const initSuburbScene = () => {
 
     // Create Grid of Houses
     const gridSize = 5;
-    const spacing = 10;
+    const spacing = 5;
     const offset = (gridSize * spacing) / 2 - spacing / 2;
 
     for (let i = 0; i < gridSize; i++) {
