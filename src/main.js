@@ -36,15 +36,15 @@ const initSuburbScene = () => {
 
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0x1D4932, 0.5);
+    const ambientLight = new THREE.AmbientLight(0xE3290D, 0.5);
     scene.add(ambientLight);
 
-    const directionalLight = new THREE.DirectionalLight(0x1D4932, 1);
+    const directionalLight = new THREE.DirectionalLight(0xE3290D, 1);
     directionalLight.position.set(10, 20, 10);
     scene.add(directionalLight);
 
     // Grid Helper (Ground)
-    const gridHelper = new THREE.GridHelper(50, 50, 0x1D4932, 0x1D4932);
+    const gridHelper = new THREE.GridHelper(50, 50, 0xE3290D, 0xE3290D);
     gridHelper.material.transparent = true;
     gridHelper.material.opacity = 0; // Lowered opacity
     scene.add(gridHelper);
@@ -58,8 +58,8 @@ const initSuburbScene = () => {
         const house = new THREE.Group();
 
         // Materials
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0x1D4932, transparent: true, opacity: 0.8 });
-        const particleMaterial = new THREE.PointsMaterial({ color: 0x1D4932, size: 0.05 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xE3290D, transparent: true, opacity: 0.8 });
+        const particleMaterial = new THREE.PointsMaterial({ color: 0xE3290D, size: 0.05 });
 
         // Base (Box)
         const width = 1 + Math.random() * 1;
@@ -79,22 +79,7 @@ const initSuburbScene = () => {
         boxPoints.position.y = height / 2;
         house.add(boxPoints);
 
-        // Roof (Cone)
-        const roofHeight = 0.5 + Math.random() * 0.5;
-        const coneGeometry = new THREE.ConeGeometry(Math.max(width, depth) * 0.8, roofHeight, 4);
-        
-        // Wireframe for Roof
-        const coneEdges = new THREE.EdgesGeometry(coneGeometry);
-        const coneLines = new THREE.LineSegments(coneEdges, wireframeMaterial);
-        coneLines.position.y = height + roofHeight / 2;
-        coneLines.rotation.y = Math.PI / 4; // Align with box
-        house.add(coneLines);
 
-        // Particles for Roof vertices
-        const conePoints = new THREE.Points(coneGeometry, particleMaterial);
-        conePoints.position.y = height + roofHeight / 2;
-        conePoints.rotation.y = Math.PI / 4;
-        house.add(conePoints);
 
         // Positioning
         house.position.set(x, 0, z);
@@ -108,7 +93,7 @@ const initSuburbScene = () => {
     };
 
     // Create Grid of Houses
-    const gridSize = 5;
+    const gridSize = 3;
     const spacing = 3;
     const offset = (gridSize * spacing) / 2 - spacing / 2;
 
