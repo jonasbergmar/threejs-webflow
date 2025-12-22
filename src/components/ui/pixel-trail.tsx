@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 // Use relative path since we haven't set up full alias resolution confirmation for all tools yet, but tsconfig has @.
 // But better be safe with relative imports for internal newly created files if possible, or trust tsconfig.
 // Using alias as configured in tsconfig path mapping.
-import { useDimensions } from "@/components/hooks/use-debounced-dimensions"
+import { useDimensions } from "../hooks/use-debounced-dimensions"
 
 interface PixelTrailProps {
   pixelSize: number // px
@@ -24,7 +24,7 @@ const PixelTrail: React.FC<PixelTrailProps> = ({
   pixelClassName,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  const dimensions = useDimensions(containerRef)
+  const dimensions = useDimensions(containerRef as React.RefObject<HTMLElement>)
   const trailId = useRef(uuidv4())
 
   const handleMouseMove = useCallback(
