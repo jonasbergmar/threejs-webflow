@@ -79,7 +79,22 @@ const initSuburbScene = () => {
         boxPoints.position.y = height / 2;
         house.add(boxPoints);
 
+        // Roof (Cone)
+        const roofHeight = 0.5 + Math.random() * 0.5;
+        const coneGeometry = new THREE.ConeGeometry(Math.max(width, depth) * 0.8, roofHeight, 4);
+        
+        // Wireframe for Roof
+        const coneEdges = new THREE.EdgesGeometry(coneGeometry);
+        const coneLines = new THREE.LineSegments(coneEdges, wireframeMaterial);
+        coneLines.position.y = height + roofHeight / 2;
+        coneLines.rotation.y = Math.PI / 4; // Align with box
+        house.add(coneLines);
 
+        // Particles for Roof vertices
+        const conePoints = new THREE.Points(coneGeometry, particleMaterial);
+        conePoints.position.y = height + roofHeight / 2;
+        conePoints.rotation.y = Math.PI / 4;
+        house.add(conePoints);
 
         // Positioning
         house.position.set(x, 0, z);
@@ -93,7 +108,7 @@ const initSuburbScene = () => {
     };
 
     // Create Grid of Houses
-    const gridSize = 3;
+    const gridSize = 5;
     const spacing = 3;
     const offset = (gridSize * spacing) / 2 - spacing / 2;
 
