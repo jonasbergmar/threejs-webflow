@@ -58,7 +58,7 @@ const initSuburbScene = () => {
         const house = new THREE.Group();
 
         // Materials
-        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xE3290D, transparent: true, opacity: 0.8 });
+        const wireframeMaterial = new THREE.LineBasicMaterial({ color: 0xE3290D, transparent: true, opacity: 0.3 });
         const particleMaterial = new THREE.PointsMaterial({ color: 0xE3290D, size: 0.05 });
 
         // Base (Box)
