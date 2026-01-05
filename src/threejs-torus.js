@@ -19,9 +19,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
       container.appendChild(renderer.domElement);
 
       const geometry = new THREE.TorusGeometry(1, 0.4, 32, 100);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const material = new THREE.MeshBasicMaterial({ color: 0xFF3E3A });
 const torus = new THREE.Mesh(geometry, material);
-      const controls = new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableZoom = false;
       controls.enableDamping = true;
       scene.add(torus);
