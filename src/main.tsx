@@ -25,6 +25,7 @@ function initHeroTorus() {
 
   let scrollProgress = 0;
   const lenis = new Lenis();
+  1;
 
   lenis.on("scroll", ScrollTrigger.update);
   gsap.ticker.add((time) => {
@@ -137,7 +138,7 @@ function initHeroTorus() {
     const mouseTargetX = mouse.y * Math.PI * 0.25;
     const mouseTargetY = mouse.x * Math.PI * 0.25;
 
-    const scrollBoost = scrollProgress * Math.PI * 2.0; // 0–360°
+    const scrollBoost = scrollProgress * Math.PI * 4.0; // 0–360°
     const combinedX = mouseTargetX + scrollBoost;
     const combinedY = mouseTargetY + scrollBoost;
 
