@@ -126,16 +126,21 @@ const material = new THREE.ShaderMaterial({
     lenis.raf(time);
     uniforms.uTime.value = time * 0.001;
 
-    // Smooth torus rotation toward mouse
-    const targetX = mouse.y * Math.PI * 0.25;
-    const targetY = mouse.x * Math.PI * 0.25;
+    // Mouse-based target rotation
+const mouseTargetX = mouse.y * Math.PI * 0.25;
+const mouseTargetY = mouse.x * Math.PI * 0.25;
 
-    const combinedY = scrollProgress * 2.0 + targetY; // combine scroll + mouse
-torus.rotation.y += (combinedY - torus.rotation.y) * 0.05;
+// Scroll-based rotation boost (amplify strength)
+const scrollBoostX = (scrollProgress - 0.5) * 10.0; // rotate -5 to 5 radians
+const scrollBoostY = (scrollProgress - 0.5) * 10.0;
 
-    torus.rotation.x += (targetX - torus.rotation.x) * 0.05;
+const combinedX = mouseTargetX + scrollBoostX;
+const combinedY = mouseTargetY + scrollBoostY;
 
-    
+// Smoothly lerp to combined target
+torus.rotation.x += (combinedX - torus.rotation.x) * 0.1;
+torus.rotation.y += (combinedY - torus.rotation.y) * 0.1;
+
     renderer.render(scene, camera);
   }
 
