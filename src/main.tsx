@@ -26,7 +26,8 @@ gsap.ticker.lagSmoothing(0);
 
   lenis.on('scroll', ({ progress }: { progress: number }) => {
     scrollProgress = progress; // a value between 0 and 1
-});
+  });
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -126,18 +127,13 @@ const material = new THREE.ShaderMaterial({
     lenis.raf(time);
     uniforms.uTime.value = time * 0.001;
 
-    // Mouse-based target rotation
-const mouseTargetX = mouse.y * Math.PI * 0.25;
+    const mouseTargetX = mouse.y * Math.PI * 0.25;
 const mouseTargetY = mouse.x * Math.PI * 0.25;
 
-// Scroll-based rotation boost (amplify strength)
-const scrollBoostX = (scrollProgress - 0.5) * 10.0; // rotate -5 to 5 radians
-const scrollBoostY = (scrollProgress - 0.5) * 10.0;
+const scrollBoost = scrollProgress * Math.PI * 2.0; // 0–360°
+const combinedX = mouseTargetX + scrollBoost;
+const combinedY = mouseTargetY + scrollBoost;
 
-const combinedX = mouseTargetX + scrollBoostX;
-const combinedY = mouseTargetY + scrollBoostY;
-
-// Smoothly lerp to combined target
 torus.rotation.x += (combinedX - torus.rotation.x) * 0.1;
 torus.rotation.y += (combinedY - torus.rotation.y) * 0.1;
 
