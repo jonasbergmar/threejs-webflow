@@ -27,59 +27,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const geometry = new THREE.TorusGeometry(1, 0.4, 32, 100);
 
   const uniforms = {
-  uColor: { value: new THREE.Color(0xff3e3a) },
-  uTime: { value: 0.0 },
-};
+    uColor: { value: new THREE.Color(0xff3e3a) },
+    uTime: { value: 0.0 },
+  };
 
-const material = new THREE.ShaderMaterial({
-  uniforms,
-  vertexShader: `
-    varying vec3 vNormal;
-    varying vec3 vViewPosition;
-    void main() {
-      vNormal = normalize(normalMatrix * normal);
-      vec4 viewPos = modelViewMatrix * vec4(position, 1.0);
-      vViewPosition = viewPos.xyz;
-      gl_Position = projectionMatrix * viewPos;
-    }
-  `,
-  fragmentShader: `
-    uniform vec3 uColor;
-    uniform float uTime;
-    varying vec3 vNormal;
-    varying vec3 vViewPosition;
+  const material = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader: `
+      varying vec3 vNormal;
+      void main() {
+        vNormal = normal;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColor;
+      uniform float uTime;
+      varying vec3 vNormal;
 
-    float random(vec2 st) {
-      return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-    }
+      void main() {
+        float stripeWidth = 2.0;
+        float x = mod(gl_FragCoord.x + uTime * 20.0, stripeWidth * 4.0);
+        if (x > stripeWidth) discard;
 
-    void main() {
-      // Use lighting or angle to camera to vary brightness
-      float brightness = dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
-
-      // Vertical stripe dithering
-      float stripeX = mod(gl_FragCoord.x, 4.0);
-      float stripeHeight = brightness * 200.0;
-
-      if (gl_FragCoord.y > stripeHeight) discard;
-      if (stripeX > 2.0) discard;
-
-      gl_FragColor = vec4(uColor, 1.0);
-    }
-  `,
-  transparent: true,
-});
-
+        gl_FragColor = vec4(uColor, 1.0);
+      }
+    `,
+    transparent: true,
+  });
 
   const torus = new THREE.Mesh(geometry, material);
-const torusGroup = new THREE.Group();
-torusGroup.add(torus);
-scene.add(torusGroup);
+  scene.add(torus);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableZoom = false;
-controls.enableDamping = true; // for smooth drag
-
+  controls.enabled = false; // Disable user drag control
 
   // Track mouse position
   const mouse = new THREE.Vector2();
@@ -88,22 +69,18 @@ controls.enableDamping = true; // for smooth drag
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
   });
 
-  function animate(time) {
-  uniforms.uTime.value = time * 0.001;
+  function animate(time: number) {
+    uniforms.uTime.value = time * 0.001;
 
-  controls.update(); // keeps camera orbit working
+    // Smooth torus rotation toward mouse
+    const targetX = mouse.y * Math.PI * 0.25;
+    const targetY = mouse.x * Math.PI * 0.25;
 
-  // Rotate the torusGroup toward the mouse
-  const targetX = mouse.y * Math.PI * 0.1;
-  const targetY = mouse.x * Math.PI * 0.1;
+    torus.rotation.x += (targetX - torus.rotation.x) * 0.05;
+    torus.rotation.y += (targetY - torus.rotation.y) * 0.05;
 
-  torusGroup.rotation.x += (targetX - torusGroup.rotation.x) * 0.05;
-  torusGroup.rotation.y += (targetY - torusGroup.rotation.y) * 0.05;
-
-  renderer.render(scene, camera);
-}
-
-
+    renderer.render(scene, camera);
+  }
 
   renderer.setAnimationLoop(animate);
 });
