@@ -6,8 +6,9 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-const modelUrl = 'https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/Jonas%203D%20Export_0004.glb';
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+const modelUrl =
+  "https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/Jonas%203D%20Export_0004.glb";
 
 document.addEventListener("DOMContentLoaded", () => {
   initHeroTorus();
@@ -156,7 +157,6 @@ function initHeroTorus() {
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
   });
-  });
 }
 
 function initAboutModel() {
@@ -165,9 +165,9 @@ function initAboutModel() {
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
-    45, 
-    container.clientWidth / container.clientHeight, 
-    0.1, 
+    45,
+    container.clientWidth / container.clientHeight,
+    0.1,
     100
   );
   camera.position.set(0, 0, 5);
@@ -180,7 +180,7 @@ function initAboutModel() {
   // Lighting
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
-  
+
   const dirLight = new THREE.DirectionalLight(0xffffff, 1);
   dirLight.position.set(5, 5, 5);
   scene.add(dirLight);
@@ -192,7 +192,7 @@ function initAboutModel() {
     (gltf) => {
       const model = gltf.scene;
       scene.add(model);
-      
+
       // Basic rotation loop for this model
       gsap.ticker.add(() => {
         model.rotation.y += 0.005;
@@ -200,7 +200,7 @@ function initAboutModel() {
     },
     undefined,
     (error) => {
-      console.error('Error loading GLB:', error);
+      console.error("Error loading GLB:", error);
     }
   );
 
@@ -214,7 +214,7 @@ function initAboutModel() {
   }
 
   window.addEventListener("resize", resize);
-  
+
   gsap.ticker.add(() => {
     renderer.render(scene, camera);
   });
