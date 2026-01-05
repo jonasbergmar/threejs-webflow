@@ -45,25 +45,49 @@ const material = new THREE.ShaderMaterial({
   `,
   fragmentShader: `
     uniform vec3 uColor;
-uniform float uTime;
-varying vec3 vNormal;
-varying vec3 vViewPosition;
+    uniform float uTime;
+    varying vec3 vNormal;
+    varying vec3 vViewPosition;
 
-void main() {
-  float brightness = max(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)), 0.0);
+    void main() {
+      // 1. Lighting calculation
+      vec3 normal = normalize(vNormal);
+      vec3 viewDir = normalize(-vViewPosition);
+      
+      // Rim light for edge definition
+      float rim = 1.0 - abs(dot(viewDir, normal));
+      rim = pow(rim, 2.0);
 
-  float stripeX = mod(gl_FragCoord.x, 4.0);
-  float flicker = 0.5 + 0.5 * sin(uTime * 2.0 + gl_FragCoord.y * 0.05);
-  float stripeHeight = brightness * flicker * 300.0;
+      // Basic diffuse light (assuming top-right light source)
+      vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
+      float diffuse = max(dot(normal, lightDir), 0.0);
 
-  if (gl_FragCoord.y > stripeHeight) discard;
-  if (stripeX > 2.0) discard;
+      // Animation: Pulse the brightness slightly
+      float pulse = 0.9 + 0.1 * sin(uTime * 2.0);
+      
+      // Combined brightness determines line thickness
+      float brightness = (diffuse * 0.8 + rim * 0.5) * pulse;
+      brightness = clamp(brightness, 0.0, 1.0);
 
-  gl_FragColor = vec4(uColor, 1.0);
-}
+      // 2. Halftone/Engraving Line Pattern
+      // Screen-space vertical lines
+      float frequency = 0.5; // Density of lines
+      float pattern = (sin(gl_FragCoord.x * frequency) + 1.0) * 0.5; // 0.0 to 1.0
 
+      // If pattern is within the 'brightness' threshold, we draw it.
+      // Brighter areas = thicker lines (more opacity coverage)
+      // Darker areas = thinner lines
+      float line = step(1.0 - brightness, pattern);
+
+      // 3. Output
+      gl_FragColor = vec4(uColor, line);
+      
+      // Optional: Clean cut for performance/transparency sorting
+      if (line < 0.1) discard;
+    }
   `,
   transparent: true,
+  side: THREE.DoubleSide,
 });
 
 
