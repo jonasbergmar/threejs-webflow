@@ -45,27 +45,23 @@ const material = new THREE.ShaderMaterial({
   `,
   fragmentShader: `
     uniform vec3 uColor;
-    uniform float uTime;
-    varying vec3 vNormal;
-    varying vec3 vViewPosition;
+uniform float uTime;
+varying vec3 vNormal;
+varying vec3 vViewPosition;
 
-    float random(vec2 st) {
-      return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-    }
+void main() {
+  float brightness = max(dot(normalize(vNormal), vec3(0.0, 0.0, 1.0)), 0.0);
 
-    void main() {
-      // Use lighting or angle to camera to vary brightness
-      float brightness = dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
+  float stripeX = mod(gl_FragCoord.x, 4.0);
+  float flicker = 0.5 + 0.5 * sin(uTime * 2.0 + gl_FragCoord.y * 0.05);
+  float stripeHeight = brightness * flicker * 300.0;
 
-      // Vertical stripe dithering
-      float stripeX = mod(gl_FragCoord.x, 4.0);
-      float stripeHeight = brightness * 200.0;
+  if (gl_FragCoord.y > stripeHeight) discard;
+  if (stripeX > 2.0) discard;
 
-      if (gl_FragCoord.y > stripeHeight) discard;
-      if (stripeX > 2.0) discard;
+  gl_FragColor = vec4(uColor, 1.0);
+}
 
-      gl_FragColor = vec4(uColor, 1.0);
-    }
   `,
   transparent: true,
 });
