@@ -71,7 +71,7 @@ void main() {
   scene.add(torus);
 
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enabled = false; // Disable user drag control
+  controls.enabled = true; // Disable user drag control
 
   // Track mouse position
   const mouse = new THREE.Vector2();
