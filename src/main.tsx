@@ -72,7 +72,9 @@ const material = new THREE.ShaderMaterial({
 
 
   const torus = new THREE.Mesh(geometry, material);
-  scene.add(torus);
+const torusGroup = new THREE.Group();
+torusGroup.add(torus);
+scene.add(torusGroup);
 
   const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableZoom = false;
@@ -89,18 +91,18 @@ controls.enableDamping = true; // for smooth drag
   function animate(time) {
   uniforms.uTime.value = time * 0.001;
 
-  // Let OrbitControls update the camera
-  controls.update();
+  controls.update(); // keeps camera orbit working
 
-  // Add subtle mouse-based rotation influence on top of controls
+  // Rotate the torusGroup toward the mouse
   const targetX = mouse.y * Math.PI * 0.1;
   const targetY = mouse.x * Math.PI * 0.1;
 
-  torus.rotation.x += (targetX - torus.rotation.x) * 0.05;
-  torus.rotation.y += (targetY - torus.rotation.y) * 0.05;
+  torusGroup.rotation.x += (targetX - torusGroup.rotation.x) * 0.05;
+  torusGroup.rotation.y += (targetY - torusGroup.rotation.y) * 0.05;
 
   renderer.render(scene, camera);
 }
+
 
 
   renderer.setAnimationLoop(animate);
