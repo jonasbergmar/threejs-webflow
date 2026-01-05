@@ -1,6 +1,7 @@
 import '@fontsource/inter';
 import './index.css';
 import './three-scene.js'; // Import existing Three.js logic
+import './threejs-torus.js';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { PixelTrailDemo } from './demo';

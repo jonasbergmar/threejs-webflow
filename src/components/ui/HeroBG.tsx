@@ -1,13 +1,22 @@
 import * as THREE from 'three';
 
-const container = document.getElementById('threejs-bg');
+const container = document.getElementById('threejs-bg') as HTMLDivElement | null;
+
+if (!container) {
+  throw new Error("Element with id 'threejs-bg' not found.");
+}
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  75,
+  container.clientWidth / container.clientHeight,
+  0.1,
+  1000
+);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(container.clientWidth, container.clientHeight);
-container.appendChild(renderer.domElement);
+container.appendChild(renderer.domElement as HTMLCanvasElement);
 
 const geometry = new THREE.TorusGeometry(1, 0.4, 32, 100);
 const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -19,7 +28,7 @@ camera.position.z = 5;
 function animate() {
   torus.rotation.x += 0.01;
   torus.rotation.y += 0.01;
-
+            
   renderer.render(scene, camera);
 }
 
