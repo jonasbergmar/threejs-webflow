@@ -117,7 +117,8 @@ const material = new THREE.ShaderMaterial({
     const targetY = mouse.x * Math.PI * 0.25;
 
     torus.rotation.y += (scrollProgress * 2.0 - torus.rotation.y) * 0.05;
-
+    torus.rotation.x += (targetX - torus.rotation.x) * 0.05;
+    torus.rotation.y += (targetY - torus.rotation.y) * 0.05;
 
 
     renderer.render(scene, camera);
