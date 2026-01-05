@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
   controls.enableDamping = true;
 
   function animate() {
-    torus.rotation.x += 0.01;
-    torus.rotation.y += 0.01;
+    torus.rotation.x += 0.02;
+    torus.rotation.y += 0.02;
     controls.update();
     renderer.render(scene, camera);
   }
