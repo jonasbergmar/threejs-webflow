@@ -2,8 +2,10 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 
+import cssInjectedByJs from 'vite-plugin-css-injected-by-js'
+
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), cssInjectedByJs()],
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
@@ -19,16 +21,19 @@ export default defineConfig({
 		},
 	},
 	build: {
-		minify: true, // Minifies the output for better performance
+		minify: true,
 		manifest: true,
+        lib: {
+			entry: './src/main.tsx',
+			name: 'WebflowTemplate',
+			fileName: (format) => `main.js`,
+			formats: ['umd']
+		},
 		rollupOptions: {
-			input: './src/main.tsx', // Changed to tsx
+            // Ensure external dependencies are bundled or handled
 			output: {
-				format: 'umd', // UMD format maximizes compatibility when loaded via a <script> tag
-				entryFileNames: 'main.js', // Force the output filename to be 'main.js'
-				esModule: false, // Avoids adding ES module markers since we’re using UMD
-				compact: true, // Produces a compact, minimized output bundle
-				name: 'WebflowTemplate', // UMD requires a name for the global variable
+				// Provide global variables to use in the UMD build
+				// for externalized deps
 				globals: {
 					react: 'React',
 					'react-dom': 'ReactDOM'
