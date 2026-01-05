@@ -156,6 +156,9 @@ function initAboutModel() {
   renderer.setClearColor(0x000000, 0);
   renderer.setSize(container.clientWidth, container.clientHeight);
   container.appendChild(renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.enableZoom = false; // Optional, disable if you want consistent scale
 
   const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
   scene.add(ambientLight);
@@ -184,6 +187,7 @@ function initAboutModel() {
         model.rotation.y += (combinedY - model.rotation.y) * 0.1;
 
         renderer.render(scene, camera);
+        controls.update();
       }
 
       gsap.ticker.add(animateModel);
