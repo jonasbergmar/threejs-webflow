@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Could not find #threejs-bg in the DOM');
     return;
   }
+  let scrollProgress = 0;
 
+lenis.on('scroll', ({ progress }) => {
+  scrollProgress = progress; // a value between 0 and 1
+});
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
     75,
@@ -96,7 +100,8 @@ const material = new THREE.ShaderMaterial({
 
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enabled = true; // Disable user drag control
-
+  controls.enableZoom = false;
+  
   // Track mouse position
   const mouse = new THREE.Vector2();
   document.addEventListener('mousemove', (event) => {
@@ -111,8 +116,9 @@ const material = new THREE.ShaderMaterial({
     const targetX = mouse.y * Math.PI * 0.25;
     const targetY = mouse.x * Math.PI * 0.25;
 
-    torus.rotation.x += (targetX - torus.rotation.x) * 0.05;
-    torus.rotation.y += (targetY - torus.rotation.y) * 0.05;
+    torus.rotation.y += (scrollProgress * 2.0 - torus.rotation.y) * 0.05;
+
+
 
     renderer.render(scene, camera);
   }
