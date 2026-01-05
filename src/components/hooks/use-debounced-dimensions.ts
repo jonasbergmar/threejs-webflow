@@ -8,32 +8,22 @@ height: number;
 export function useDimensions(ref: RefObject<HTMLElement | SVGElement>): Dimensions {
   const [dimensions, setDimensions] = useState<Dimensions>({ width: 0, height: 0 });
 
-useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
+  useEffect(() => {
+    if (!ref.current) return;
 
-    const updateDimensions = () => {
-      if (ref.current) {
-        const { width, height } = ref.current.getBoundingClientRect();
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
         setDimensions({ width, height });
       }
-    };
+    });
 
-    const debouncedUpdateDimensions = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(updateDimensions, 250); // Wait 250ms after resize ends
-    };
-
-    // Initial measurement
-    updateDimensions();
-
-    window.addEventListener('resize', debouncedUpdateDimensions);
+    observer.observe(ref.current);
 
     return () => {
-      window.removeEventListener('resize', debouncedUpdateDimensions);
-      clearTimeout(timeoutId);
+      observer.disconnect();
     };
+  }, [ref]);
 
-}, [ref]);
-
-return dimensions;
+  return dimensions;
 }
