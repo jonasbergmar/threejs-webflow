@@ -121,6 +121,19 @@ function initHeroTorus() {
     torus.rotation.x += (combinedX - torus.rotation.x) * 0.1;
     torus.rotation.y += (combinedY - torus.rotation.y) * 0.1;
 
+    const start = 0.3;
+    const end = 0.6;
+
+    // Normalize scroll into 0 → 1 range within that step
+    let t = (scrollProgress - start) / (end - start);
+    t = THREE.MathUtils.clamp(t, 0, 1);
+
+    // Eased scroll-based position
+    const eased = THREE.MathUtils.smoothstep(0, 1, t); // smoother than linear
+
+    // Move left to x = -2
+    torus.position.x = -2 * eased;
+
     controls.update();
     renderer.render(scene, camera);
   }
