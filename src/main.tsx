@@ -17,11 +17,12 @@ const rootId = 'threejs-bg';
 const rootElement = document.getElementById(rootId);
 
 if (rootElement) {
+  console.log('React App attempting to mount into #threejs-bg');
   ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
       <PixelTrailDemo />
     </React.StrictMode>
   );
 } else {
-  console.warn(`Element with id "${rootId}" not found. React app will not render.`);
+  console.warn(`Element with id "${rootId}" not found. React app will not render. Ensure you have a div with id="${rootId}" in your HTML.`);
 }

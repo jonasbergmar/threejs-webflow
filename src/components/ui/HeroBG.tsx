@@ -7,17 +7,19 @@ const HeroBG: React.FC = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const container = containerRef.current;
+    
     // --- Scene Setup ---
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.z = 4;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     
     // Append rendering canvas to the container
-    containerRef.current.appendChild(renderer.domElement);
+    container.appendChild(renderer.domElement);
 
     // --- Shader Material ---
     // The "Glyph Dither" effect: 
@@ -148,20 +150,22 @@ const HeroBG: React.FC = () => {
 
     // --- Resize Handler ---
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+        if (!container) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
     };
 
-    window.addEventListener('resize', handleResize);
+    const resizeObserver = new ResizeObserver(() => handleResize());
+    resizeObserver.observe(container);
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
       cancelAnimationFrame(animationId);
       
-      if (containerRef.current && renderer.domElement instanceof Node) {
-        containerRef.current.removeChild(renderer.domElement);
+      if (container && renderer.domElement instanceof Node) {
+        container.removeChild(renderer.domElement);
       }
       
       renderer.dispose();
