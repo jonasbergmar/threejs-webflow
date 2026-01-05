@@ -1,29 +1,44 @@
 import '@fontsource/inter';
 import './index.css';
-import './three-scene.js'; // Import existing Three.js logic
-import './threejs-torus.js';
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { PixelTrailDemo } from './demo';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
-// Determine root element. If standard "root" doesn't exist, try to find a container or create one.
-// Since this is likely for a Webflow template, we might want to target a specific request ID or class.
-// For the demo purpose, we'll look for "root" or append one.
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('threejs-bg');
 
-// Determine root element.
-// We target 'threejs-bg' as requested for Webflow integration.
-// Ensure your Webflow project has a div with id="threejs-bg".
+  if (!container) {
+    console.error('Could not find #threejs-bg in the DOM');
+    return;
+  }
 
-const rootId = 'threejs-bg';
-const rootElement = document.getElementById(rootId);
-
-if (rootElement) {
-  console.log('React App attempting to mount into #threejs-bg');
-  ReactDOM.createRoot(rootElement).render(
-    <React.StrictMode>
-      <PixelTrailDemo />
-    </React.StrictMode>
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(
+    75,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    1000
   );
-} else {
-  console.warn(`Element with id "${rootId}" not found. React app will not render. Ensure you have a div with id="${rootId}" in your HTML.`);
-}
+  camera.position.z = 5;
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  container.appendChild(renderer.domElement);
+
+  const geometry = new THREE.TorusGeometry(1, 0.4, 32, 100);
+  const material = new THREE.MeshBasicMaterial({ color: 0xff3e3a });
+  const torus = new THREE.Mesh(geometry, material);
+  scene.add(torus);
+
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableZoom = false;
+  controls.enableDamping = true;
+
+  function animate() {
+    torus.rotation.x += 0.01;
+    torus.rotation.y += 0.01;
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  renderer.setAnimationLoop(animate);
+});
