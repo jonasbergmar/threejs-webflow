@@ -1,7 +1,7 @@
-import lenis from 'lenis';
 import './index.css';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import Lenis from 'lenis';
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('threejs-bg');
@@ -10,10 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Could not find #threejs-bg in the DOM');
     return;
   }
-  let scrollProgress = 0;
 
-lenis.on('scroll', ({ progress }) => {
-  scrollProgress = progress; // a value between 0 and 1
+  let scrollProgress = 0;
+  const lenis = new Lenis();
+
+  lenis.on('scroll', ({ progress }: { progress: number }) => {
+    scrollProgress = progress; // a value between 0 and 1
 });
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(
@@ -111,6 +113,7 @@ const material = new THREE.ShaderMaterial({
   });
 
   function animate(time: number) {
+    lenis.raf(time);
     uniforms.uTime.value = time * 0.001;
 
     // Smooth torus rotation toward mouse
