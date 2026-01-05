@@ -10,9 +10,10 @@ import { PixelTrailDemo } from './demo';
 // For the demo purpose, we'll look for "root" or append one.
 
 // Determine root element.
-// We target 'pixel-trail-bg' as requested for Webflow integration.
+// We target 'threejs-bg' as requested for Webflow integration.
+// Ensure your Webflow project has a div with id="threejs-bg".
 
-const rootId = 'pixel-trail-bg';
+const rootId = 'threejs-bg';
 const rootElement = document.getElementById(rootId);
 
 if (rootElement) {
@@ -22,5 +23,5 @@ if (rootElement) {
     </React.StrictMode>
   );
 } else {
-  console.warn(`Element with id "${rootId}" not found. PixelTrail will not render.`);
+  console.warn(`Element with id "${rootId}" not found. React app will not render.`);
 }
