@@ -1,7 +1,10 @@
 import './index.css';
+import 'lenis/dist/lenis.css'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import Lenis from 'lenis';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('threejs-bg');
@@ -13,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let scrollProgress = 0;
   const lenis = new Lenis();
+
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add((time) => {
+  lenis.raf(time * 1000); // Convert time from seconds to milliseconds
+});
+gsap.ticker.lagSmoothing(0);
+
 
   lenis.on('scroll', ({ progress }: { progress: number }) => {
     scrollProgress = progress; // a value between 0 and 1
