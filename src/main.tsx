@@ -196,7 +196,7 @@ function initAboutModel() {
         const combinedX = mouseTargetX + scrollBoost;
         const combinedY = mouseTargetY + scrollBoost;
 
-        model.rotation.x += (combinedX - model.rotation.x) * 0.1;
+        model.rotation.y += (combinedY - model.rotation.y) * 0.1;
 
         renderer.render(scene, camera);
         controls.update();
