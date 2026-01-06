@@ -188,7 +188,7 @@ function initAboutModel() {
       const model = gltf.scene;
       scene.add(model);
       model.position.y = -0.5;
-      model.scale.set(0.8, 0.8, 0.8);
+      model.scale.set(1, 1, 1);
       function animateModel() {
         const mouseTargetX = mouse.y * Math.PI * 0.25;
         const mouseTargetY = mouse.x * Math.PI * 0.25;
