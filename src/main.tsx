@@ -163,7 +163,7 @@ function initAboutModel() {
     0.1,
     100
   );
-  camera.position.set(0, 0, 5);
+  camera.position.set(0, 0, 3);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setClearColor(0x000000, 0);
