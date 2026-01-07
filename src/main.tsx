@@ -173,13 +173,12 @@ function initAboutModel() {
   controls.enableDamping = true;
   controls.enableZoom = false; // Optional, disable if you want consistent scale
 
-  const hemiLight = new THREE.HemisphereLight(
-    0xffffff, // sky
-    0xffffff, // ground
-    1.1 // intensity
-  );
-  scene.add(hemiLight);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+  scene.add(ambientLight);
 
+  const dirLight = new THREE.DirectionalLight(0xffffff, 3);
+  dirLight.position.set(5, 5, 5);
+  scene.add(dirLight);
   const modelUrl =
     "https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/Jonas%203D%20Export_0004.glb";
   const loader = new GLTFLoader();
