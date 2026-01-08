@@ -6,6 +6,7 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -172,6 +173,12 @@ function initAboutModel() {
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.enableZoom = false; // Optional, disable if you want consistent scale
+  const pmremGenerator = new THREE.PMREMGenerator(renderer);
+  const environment = new RoomEnvironment();
+  const envMap = pmremGenerator.fromScene(environment).texture;
+
+  scene.environment = envMap;
+  scene.background = null; // or set a color/texture if you want a background
 
   const modelUrl =
     "https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/scene%20(3).glb";
@@ -181,6 +188,7 @@ function initAboutModel() {
     (gltf) => {
       const model = gltf.scene;
       scene.add(model);
+      model.position.y = -0.5;
       model.scale.set(1, 1, 1);
       function animateModel() {
         const mouseTargetX = mouse.y * Math.PI * 0.25;
