@@ -173,12 +173,8 @@ function initAboutModel() {
   controls.enableDamping = true;
   controls.enableZoom = false; // Optional, disable if you want consistent scale
 
-  const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-  ambientLight.position.set(-0.08, 0.08, 0.08);
-  scene.add(ambientLight);
-
   const modelUrl =
-    "https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/Jonas%203D%20Export_0004.glb";
+    "https://pub-9a148005ec23411eaa0569d3cf870b96.r2.dev/scene%20(3).glb";
   const loader = new GLTFLoader();
   loader.load(
     modelUrl,
